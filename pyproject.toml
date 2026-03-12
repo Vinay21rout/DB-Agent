@@ -1,0 +1,30 @@
+[project]
+name = "agentic-project"
+version = "0.1.0"
+description = "Add your description here"
+readme = "README.md"
+requires-python = ">=3.11,<3.12"
+dependencies = [
+     "langchain",
+     "langgraph",
+     "langchain-core",
+     "langchain-community",
+     "langchain-groq",
+     "langchain-openai",
+     "langchain-huggingface",
+     "langchainhub",
+     "sqlalchemy",
+     "pymysql",
+     "mysql-connector-python",
+     "langchain-experimental",
+     "faiss-cpu",
+     "chromadb",
+     "sentence-transformers",
+     "python-dotenv",
+     "langsmith",
+     "tiktoken",
+     "pydantic",
+     "typing-extensions",
+     "transformers",
+     "ipykernel>=7.2.0",
+]

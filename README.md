@@ -86,7 +86,7 @@ The app will open in your browser at `http://localhost:8501`
 
 To explore or test the backend logic directly:
 ```bash
-jupyter notebook db_agent_backend.ipynb
+jupyter notebook db_agent_backend_only.ipynb
 ```
 
 ```python
@@ -118,8 +118,8 @@ Execute            → Returns a natural language answer
 
 ```
 DB-Agent/
-├── app.py                   # Streamlit UI + Backend (main entry point)
-├── db_agent_backend.ipynb   # Backend logic (Jupyter notebook)
+├── app.py                        # Streamlit UI + Backend (main entry point)
+├── db_agent_backend_only.ipynb   # Backend only - no UI (Jupyter notebook)
 ├── requirements.txt         # Project dependencies
 ├── .env                     # Environment variables (not tracked)
 ├── .gitignore               # Git ignore rules

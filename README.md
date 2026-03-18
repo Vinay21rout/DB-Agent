@@ -9,6 +9,7 @@ An intelligent SQL agent that automatically selects the appropriate database, ge
 - **Multi-Database Support**: Supports `school` and `company` databases
 - **Natural Language Responses**: Converts SQL results into human-readable answers
 - **Interactive Web UI**: Clean Streamlit chat interface with SQL query viewer
+- **SQL Safety Check**: Blocks dangerous queries containing DROP, DELETE, or TRUNCATE
 - **Built with LangGraph**: State-based workflow for reliable query processing
 
 ## 📊 Supported Databases
@@ -108,6 +109,8 @@ DB Selector        → Identifies the relevant database (school / company)
 Connection Evaluator → Connects to DB and retrieves schema
      ↓
 Generate SQL Query  → Converts natural language to SQL
+     ↓
+SQL Safety Check    → Blocks dangerous queries (DROP/DELETE/TRUNCATE)
      ↓
 Generate SQL Response → Executes the SQL query
      ↓

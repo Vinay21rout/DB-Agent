@@ -1,3 +1,6 @@
+#                                        DB-Agent
+
+
 import streamlit as st
 from langchain_groq import ChatGroq
 from langgraph.graph import StateGraph, START, END
@@ -40,6 +43,7 @@ class SqlAgentState(TypedDict):
     sql_response: str
     final_answer: str
     schema: str
+    safety:str
 
 # Agent functions
 def db_selector(state: SqlAgentState):
@@ -108,6 +112,22 @@ SQL Query:
     response = llm.invoke(GENERATE_SQL_QUERY_PROMPT)
     return {"sql_query": response.content.replace("```","").strip("sql")}
 
+
+def sql_safety_check(state: SqlAgentState):
+    dangerous = ["DROP", "DELETE", "TRUNCATE"]
+    for word in dangerous:
+        if word in state["sql_query"].upper():
+            return {"safety": "unsafe"}
+    return {"safety": "safe"}
+
+def route_safety(state: SqlAgentState):
+    if state["safety"] == "unsafe":
+        return "blocked"
+    return "allowed"
+
+def blocked(state: SqlAgentState):
+    return {"final_answer": "⚠️ Unsafe query detected! Query contains dangerous operations (DROP/DELETE/TRUNCATE) and was blocked."}
+
 def generate_sql_response(state: SqlAgentState):
     db_response = state['db'].run(state['sql_query'])
     return {"sql_response": db_response}
@@ -145,13 +165,17 @@ def build_workflow():
     graph.add_node("db_selector", db_selector)
     graph.add_node("connection_evaluator", connection_evaluator)
     graph.add_node("generate_sql_query", generate_sql_query)
+    graph.add_node("sql_safety_check", sql_safety_check)
+    graph.add_node("blocked", blocked)
     graph.add_node("generate_sql_response", generate_sql_response)
     graph.add_node("execute", execute)
     
     graph.add_edge(START, "db_selector")
     graph.add_edge("db_selector", "connection_evaluator")
     graph.add_edge("connection_evaluator", "generate_sql_query")
-    graph.add_edge("generate_sql_query", "generate_sql_response")
+    graph.add_edge("generate_sql_query", "sql_safety_check")
+    graph.add_conditional_edges("sql_safety_check", route_safety, {"blocked": "blocked", "allowed": "generate_sql_response"})
+    graph.add_edge("blocked", END)
     graph.add_edge("generate_sql_response", "execute")
     graph.add_edge("execute", END)
     
